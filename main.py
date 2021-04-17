@@ -1,6 +1,9 @@
 import conf
 import discord
 from discord.ext import commands
+import os
+import img_handler as imhl
+from discord.ext import commands
 # intense = discord.Intents.default()
 # intense.members = True
 
@@ -68,17 +71,35 @@ from discord.ext import commands
 #             await message.channel.send(msg)
 
 # client.run(conf.bot_token)
+intense = discord.Intents.default()
+intense.members = True
 
+bot = commands.Bot(command_prefix="!", intents = intense)
 
-bot = commands.Bot(command_prefix="!")
+channel = 825339462707052554
 
-@bot.command(name = "Hello")
-async def command_hello(ctx, *args):
-    
-    
-    if ctx.channel.id == 825339462707052554:
-        msg = f'hello to you! You said: "{message}"'
+@bot.command(name = "get_member")
+async def get_member(ctx, member:discord.Member = None):
+    msg = None
+    global channel
+    if ctx.channel.id == channel:
+       
+        if member:
+            msg = f'Member {member.name}{"({member.nick})" if member.nick else " "} - {member.id}'
+
+        if msg == None:
+            msg = "error"
+            
+            
         await ctx.channel.send(msg)
 
+@bot.command(name = "mk")
+async def mk(ctx, f1:discord.Member = None, f2:discord.Member = bot.user):
+    msg = None
+    global channel
+    if ctx.channel.id == channel:
+        if f1 and f2:
+            await imhl.vs_create(f1.avatar_url, f2.avatar_url)
+            await ctx.channel.send(file =discord.File(os.path.join("./img/result.png")))
 
 bot.run(conf.bot_token)
